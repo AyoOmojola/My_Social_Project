@@ -1,0 +1,72 @@
+{% extends 'navbar.html' %}
+{% block title %} User Profile Page {% endblock %}
+
+{% block css_block %}
+<style>
+    .crop {
+        overflow: hidden;
+        display: inline-flex;
+    }
+
+    .crop img {
+        width: 400px;
+        height: 300px;
+        margin: -75px 0 0 -100px;
+        position: relative;
+    }
+
+    .crop div {
+        position: absolute;
+        bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block body_block %}
+<div class="row">
+    <div class="col-sm-4">
+        {% if user_other.user_profile.profile_pic %}
+        <img src="/media/{{ user_other.user_profile.profile_pic }}" width="220px" height="220px" class="rounded-circle">
+        {% else %}
+        <img src="/media/profile_pics/empty profile pic.webp" width="220px" height="220px" class="rounded-circle">
+        {% endif %}
+    </div>
+
+
+
+
+
+    <div class="col-sm-8">
+        <h3>{{user_other.username}} &nbsp;
+            {% if not already_followed %}
+            <a href="{% url 'app_login:follow' username=user_other.username %}" class="btn btn-primary">Follow</a>
+            {% else %}
+            <a href="{% url 'app_login:unfollow' username=user_other.username %}" class="btn btn-primary">UnFollow</a>
+            {% endif %}
+
+        </h3>
+        <h4>{{ user_other.post.count }} Posts &nbsp;&nbsp; {{user_other.follower.count}} Follower &nbsp;&nbsp;
+            {{user_other.following.count}} Following </h4>
+            
+        <!-- this crossreferencing across models is only possible since he is accessing all data related to user -->
+        <br>
+        <h3> {{user_other.user_profile.full_name}} </h3>
+        <h6> {{user_other.user_profile.description}} </h6>
+
+    </div>
+</div>
+
+<br>
+<br>
+<div>
+    {% for post in user_other.post.all %}
+    <div class="crop">
+        <img src="/media/{{ post.image}}">
+        
+        <div style="padding:20px">
+            <h3>{{ post.caption }}</h3>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
